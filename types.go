@@ -679,7 +679,7 @@ const (
 )
 
 type BaseObject struct {
-	ID   int    `json:"id"`
+	ID   int    `json:"id,omitempty"`
 	Name string `json:"name"`
 }
 
@@ -713,9 +713,19 @@ type Location struct {
 
 type Organization struct {
 	BaseObject
-	Locations []Location           `json:"locations"`
-	Policies  []PolicyRef          `json:"policies"`
-	Settings  OrganizationSettings `json:"settings"`
+	Description  string            `json:"description,omitempty"`
+	NodeApprovalMode  string       `json:"nodeApprovalMode,omitempty"`
+	Locations []Location           `json:"locations,omitempty"`
+	Policies  []PolicyRef          `json:"policies,omitempty"`
+	Settings  OrganizationSettings `json:"settings,omitempty"`
+}
+
+type CreateOrganization struct {
+	Name  string                   `json:"name"`
+	Description  string            `json:"description,omitempty"`
+	NodeApprovalMode  string       `json:"nodeApprovalMode,omitempty"`
+	Locations []Location           `json:"locations,omitempty"`
+	Policies  []PolicyRef          `json:"policies,omitempty"`
 }
 
 type OrganizationSummary struct {

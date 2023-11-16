@@ -2,6 +2,7 @@ package ninjarmm
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -25,7 +26,7 @@ func (client *Client) handleResponse(response *resty.Response, data any) error {
 	}
 	err = json.Unmarshal(response.Body(), data)
 	if err != nil {
-		return err
+		return errors.New(response.String())
 	}
 	return nil
 }
@@ -154,11 +155,12 @@ func (client *Client) OSPatchReport(orgId int) ([]OSPatchReportDetail, error) {
 	return patchReport, nil
 }
 
-func (client *Client) CreateOrganization(name string) (org Organization, err error) {
+func (client *Client) CreateOrganization(create_org CreateOrganization) (org Organization, err error) {
 	orgs, err := client.Organizations()
 	if err != nil {
 		return
 	}
+	name := create_org.Name
 	matchingOrgName := ""
 	matchingOrgID := 0
 	for _, org := range orgs {
@@ -171,7 +173,7 @@ func (client *Client) CreateOrganization(name string) (org Organization, err err
 		err = fmt.Errorf("object with name '%s' already exists (ID '%d'). A new object will not be created", matchingOrgName, matchingOrgID)
 		return
 	}
-	res, err := client.httpClient.R().SetBody(struct{ Name string }{Name: name}).Post("/v2/organizations")
+	res, err := client.httpClient.R().SetBody(create_org).Post("/v2/organizations")
 	if err != nil {
 		return
 	}
