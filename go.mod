@@ -1,4 +1,4 @@
-module github.com/stellaraf/go-ninjarmm
+module github.com/Peter2121/go-ninjarmm
 
 go 1.19
 
