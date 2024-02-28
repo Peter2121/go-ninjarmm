@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 	"sort"
 	"time"
 
@@ -77,6 +78,24 @@ func (client *Client) Organization(id int) (org Organization, err error) {
 		return
 	}
 	err = client.handleResponse(res, &org)
+	return
+}
+
+func (client *Client) GetOrganizationCustomFields(id int) (customFields map[string]any, err error) {
+	res, err := client.httpClient.R().Get(fmt.Sprintf("/api/v2/organization/%d/custom-fields", id))
+	if err != nil {
+		return
+	}
+	err = client.handleResponse(res, &customFields)
+	return
+}
+
+func (client *Client) UpdateOrganizationCustomFields(id int, customFields map[string]any) (err error) {
+	res, err := client.httpClient.R().SetHeader("Content-Type", "application/json").SetBody(customFields).Patch(fmt.Sprintf("/api/v2/organization/%d/custom-fields", id))
+	if err != nil {
+		return
+	}
+	err = checkForError(res)
 	return
 }
 
@@ -153,6 +172,25 @@ func (client *Client) OSPatchReport(orgId int) ([]OSPatchReportDetail, error) {
 		patchReport = append(patchReport, result)
 	}
 	return patchReport, nil
+}
+
+func (client *Client) SearchOrganizationByCode(org_code string) (org Organization, orgs []OrganizationSummary, err error) {
+	orgs, err = client.Organizations()
+	if err != nil {
+		return
+	}
+	for _, oneorg := range orgs {
+		pattern := regexp.MustCompile(`^\[([a-zA-Z0-9-]+)\]\s+(.*)$`)
+		segs := pattern.FindAllStringSubmatch(oneorg.Name, 2)
+		if len(segs) == 0 {
+			continue
+		}
+		if org_code == segs[0][1] {
+			org, err = client.Organization(oneorg.ID)
+			break
+		}
+	}
+	return
 }
 
 func (client *Client) CreateOrganization(create_org CreateOrganization) (org Organization, err error) {
