@@ -91,13 +91,16 @@ func checkForError(response *resty.Response) (err error) {
 			case "error":
 				errorDetail = data[key]
 				break loop
+			case "resultCode":
+				errorDetail = data[key]
+				break loop
 			}
 		}
 	}
 	if errorDetail == "unknown" {
 		return nil
 	}
-	err = fmt.Errorf("request failed with %d error '%s'", response.StatusCode(), errorDetail)
+	err = fmt.Errorf("request failed with '%s' error: '%s'", response.RawResponse.Status, errorDetail)
 	return
 }
 

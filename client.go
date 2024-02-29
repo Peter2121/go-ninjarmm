@@ -14,6 +14,8 @@ import (
 	"github.com/stellaraf/go-utils"
 )
 
+const LIST_ORG_PAGE_SIZE string = "150"
+
 type Client struct {
 	auth       *authT
 	baseURL    string
@@ -60,7 +62,7 @@ func (client *Client) OrganizationLocations(orgID int) ([]Location, error) {
 }
 
 func (client *Client) Organizations() ([]OrganizationSummary, error) {
-	res, err := client.httpClient.R().Get("/api/v2/organizations")
+	res, err := client.httpClient.R().SetQueryParam("pageSize", LIST_ORG_PAGE_SIZE).Get("/api/v2/organizations")
 	if err != nil {
 		return nil, err
 	}
