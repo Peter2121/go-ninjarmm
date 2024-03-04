@@ -97,6 +97,9 @@ func (client *Client) UpdateOrganizationCustomFields(id int, customFields map[st
 	if err != nil {
 		return
 	}
+	if res.RawResponse.Status == "204 No Content" {
+		return
+	}
 	err = checkForError(res)
 	return
 }

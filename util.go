@@ -65,6 +65,9 @@ func loadEnv() (env environmentT, err error) {
 func checkForError(response *resty.Response) (err error) {
 	var possibleError interface{}
 	body := response.Body()
+	if len(body) == 0 {
+		return nil
+	}
 	err = json.Unmarshal(body, &possibleError)
 	if err != nil {
 		return
