@@ -14,7 +14,7 @@ import (
 	"github.com/stellaraf/go-utils"
 )
 
-const LIST_ORG_PAGE_SIZE string = "150"
+const LIST_ORG_PAGE_SIZE int = 150
 
 type Client struct {
 	auth       *authT
@@ -62,7 +62,7 @@ func (client *Client) OrganizationLocations(orgID int) ([]Location, error) {
 }
 
 func (client *Client) Organizations() ([]OrganizationSummary, error) {
-	res, err := client.httpClient.R().SetQueryParam("pageSize", LIST_ORG_PAGE_SIZE).Get("/api/v2/organizations")
+	res, err := client.httpClient.R().SetQueryParam("pageSize", fmt.Sprintf("%d", LIST_ORG_PAGE_SIZE)).Get("/api/v2/organizations")
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,34 @@ func (client *Client) Organizations() ([]OrganizationSummary, error) {
 	if err != nil {
 		return nil, err
 	}
-	return orgs, nil
+	orgs_len := len(orgs)
+	if orgs_len < LIST_ORG_PAGE_SIZE {
+		return orgs, nil
+	}
+	all_orgs := make([]OrganizationSummary, orgs_len)
+	_ = copy(all_orgs, orgs)
+	var erra error = nil
+	var last_id = orgs[orgs_len-1].ID
+	for {
+		res, err := client.httpClient.R().SetQueryParam("pageSize", fmt.Sprintf("%d", LIST_ORG_PAGE_SIZE)).SetQueryParam("after", fmt.Sprintf("%d", last_id)).Get("/api/v2/organizations")
+		if err != nil {
+			erra = err
+			break
+		}
+		err = client.handleResponse(res, &orgs)
+		if err != nil {
+			erra = err
+			break
+		}
+		orgs_len = len(orgs)
+		if orgs_len > 0 {
+			all_orgs = append(all_orgs, orgs...)
+			last_id = orgs[orgs_len-1].ID
+		} else {
+			break
+		}
+	}
+	return all_orgs, erra
 }
 
 func (client *Client) Organization(id int) (org Organization, err error) {
