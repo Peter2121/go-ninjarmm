@@ -61,6 +61,19 @@ func (client *Client) OrganizationLocations(orgID int) ([]Location, error) {
 	return locations, nil
 }
 
+func (client *Client) OrganizationDevices(orgID int) ([]Device, error) {
+	res, err := client.httpClient.R().Get(fmt.Sprintf("/api/v2/organization/%d/devices", orgID))
+	if err != nil {
+		return nil, err
+	}
+	var devices []Device
+	err = client.handleResponse(res, &devices)
+	if err != nil {
+		return nil, err
+	}
+  return devices, nil
+}
+
 func (client *Client) Organizations() ([]OrganizationSummary, error) {
 	res, err := client.httpClient.R().SetQueryParam("pageSize", fmt.Sprintf("%d", LIST_ORG_PAGE_SIZE)).Get("/api/v2/organizations")
 	if err != nil {
