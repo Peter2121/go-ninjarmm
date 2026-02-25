@@ -713,19 +713,19 @@ type Location struct {
 
 type Organization struct {
 	BaseObject
-	Description  string            `json:"description,omitempty"`
-	NodeApprovalMode  string       `json:"nodeApprovalMode,omitempty"`
-	Locations []Location           `json:"locations,omitempty"`
-	Policies  []PolicyRef          `json:"policies,omitempty"`
-	Settings  OrganizationSettings `json:"settings,omitempty"`
+	Description      string               `json:"description,omitempty"`
+	NodeApprovalMode string               `json:"nodeApprovalMode,omitempty"`
+	Locations        []Location           `json:"locations,omitempty"`
+	Policies         []PolicyRef          `json:"policies,omitempty"`
+	Settings         OrganizationSettings `json:"settings,omitempty"`
 }
 
 type CreateOrganization struct {
-	Name  string                   `json:"name"`
-	Description  string            `json:"description,omitempty"`
-	NodeApprovalMode  string       `json:"nodeApprovalMode,omitempty"`
-	Locations []Location           `json:"locations,omitempty"`
-	Policies  []PolicyRef          `json:"policies,omitempty"`
+	Name             string      `json:"name"`
+	Description      string      `json:"description,omitempty"`
+	NodeApprovalMode string      `json:"nodeApprovalMode,omitempty"`
+	Locations        []Location  `json:"locations,omitempty"`
+	Policies         []PolicyRef `json:"policies,omitempty"`
 }
 
 type OrganizationSummary struct {

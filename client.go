@@ -61,6 +61,19 @@ func (client *Client) OrganizationLocations(orgID int) ([]Location, error) {
 	return locations, nil
 }
 
+func (client *Client) OrganizationDevices(orgID uint64) ([]Device, error) {
+	res, err := client.httpClient.R().Get(fmt.Sprintf("/api/v2/organization/%d/devices", orgID))
+	if err != nil {
+		return nil, err
+	}
+	var devices []Device
+	err = client.handleResponse(res, &devices)
+	if err != nil {
+		return nil, err
+	}
+	return devices, nil
+}
+
 func (client *Client) Organizations() ([]OrganizationSummary, error) {
 	res, err := client.httpClient.R().SetQueryParam("pageSize", fmt.Sprintf("%d", LIST_ORG_PAGE_SIZE)).Get("/api/v2/organizations")
 	if err != nil {
@@ -110,7 +123,7 @@ func (client *Client) Organization(id int) (org Organization, err error) {
 	return
 }
 
-func (client *Client) GetOrganizationCustomFields(id int) (customFields map[string]any, err error) {
+func (client *Client) GetOrganizationCustomFields(id uint64) (customFields map[string]any, err error) {
 	res, err := client.httpClient.R().Get(fmt.Sprintf("/api/v2/organization/%d/custom-fields", id))
 	if err != nil {
 		return
@@ -119,7 +132,7 @@ func (client *Client) GetOrganizationCustomFields(id int) (customFields map[stri
 	return
 }
 
-func (client *Client) UpdateOrganizationCustomFields(id int, customFields map[string]any) (err error) {
+func (client *Client) UpdateOrganizationCustomFields(id uint64, customFields map[string]any) (err error) {
 	res, err := client.httpClient.R().SetHeader("Content-Type", "application/json").SetBody(customFields).Patch(fmt.Sprintf("/api/v2/organization/%d/custom-fields", id))
 	if err != nil {
 		return
