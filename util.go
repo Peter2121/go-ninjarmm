@@ -45,14 +45,18 @@ func isApiError(data interface{}) bool {
 }
 
 func getNinjaRMMError(data interface{}) string {
+	reflection := reflect.ValueOf(data)
+	if reflection.Kind() == reflect.Ptr {
+		reflection = reflection.Elem()
+	}
 	if isRequestError(data) {
-		return data.(NinjaRMMRequestError).ErrorMessage
+		return reflection.FieldByName("ErrorMessage").String()
 	}
 	if isApiError(data) {
-		return data.(NinjaRMMAPIError).ErrorDescription
+		return reflection.FieldByName("ErrorDescription").String()
 	}
 	if isGenericError(data) {
-		return data.(NinjaRMMBaseError).Error
+		return reflection.FieldByName("Error").String()
 	}
 	return fmt.Sprintf("%s", data)
 }
