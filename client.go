@@ -16,6 +16,8 @@ import (
 
 const LIST_ORG_PAGE_SIZE int = 150
 
+const DEFAULT_HTTP_TIMEOUT = 30 * time.Second
+
 type Client struct {
 	auth       *authT
 	baseURL    string
@@ -325,6 +327,7 @@ func New(
 	}
 	httpClient := resty.New()
 	httpClient.SetBaseURL(baseURL)
+	httpClient.SetTimeout(DEFAULT_HTTP_TIMEOUT)
 	token, err := auth.GetAccessToken()
 	if err != nil {
 		return nil, err

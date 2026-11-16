@@ -192,6 +192,7 @@ func newAuth(
 	}
 	httpClient := resty.New()
 	httpClient.SetBaseURL(baseURL)
+	httpClient.SetTimeout(DEFAULT_HTTP_TIMEOUT)
 	httpClient.SetHeader("user-agent", "go-ninjarmm")
 	auth := &authT{
 		baseURL:                 baseURL,
