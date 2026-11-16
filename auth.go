@@ -145,7 +145,7 @@ func (auth *authT) CacheNewToken(token *ninjaRMMAccessToken) error {
 
 func (auth *authT) SetRefreshToken(value string) error {
 	if auth.encryption {
-		encryptedToken := encrypt(value, auth.encryptionPassphrase)
+		encryptedToken := encrypt(auth.encryptionPassphrase, value)
 		err := auth.setRefreshTokenCallback(encryptedToken, auth.RefreshTokenExpiry())
 		if err != nil {
 			return err
@@ -161,7 +161,7 @@ func (auth *authT) SetRefreshToken(value string) error {
 
 func (auth *authT) SetAccessToken(token *ninjaRMMAccessToken) error {
 	if auth.encryption {
-		encrypted := encrypt(token.AccessToken, auth.encryptionPassphrase)
+		encrypted := encrypt(auth.encryptionPassphrase, token.AccessToken)
 		err := auth.setAccessTokenCallback(encrypted, token.Expiry())
 		if err != nil {
 			return err
