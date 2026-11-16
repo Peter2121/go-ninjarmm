@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/muesli/cache2go v0.0.0-20221011235721-518229cd8021
-	github.com/stellaraf/go-utils v0.0.4
+	github.com/stellaraf/go-utils v0.1.7
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/crypto v0.59.0
 )
